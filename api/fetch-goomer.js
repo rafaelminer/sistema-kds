@@ -16,8 +16,9 @@ export default async function handler(req, res) {
   const token = req.query.token || process.env.VITE_GOOMER_TOKEN || "16817885-c866-495b-8d27-23e873bb56f8";
 
   const endpointsToTry = [
+    'https://partner-api.goomer.app/v1/orders?limit=50',
     'https://partner-api.goomer.app/v1/orders',
-    'https://api.goomer.app/v1/orders?status=PENDING,IN_PREPARATION',
+    'https://api.goomer.app/v1/orders?limit=50',
     'https://api.goomer.app/v1/orders',
     'https://api.goomer.com.br/v1/orders'
   ];
@@ -37,7 +38,7 @@ export default async function handler(req, res) {
 
       if (response.ok) {
         const data = await response.json();
-        const rawList = Array.isArray(data) ? data : (data.orders || data.data || []);
+        const rawList = Array.isArray(data) ? data : (data.orders || data.data || data.results || []);
         if (rawList && rawList.length > 0) {
           fetchedOrders = rawList;
           break;
@@ -55,14 +56,14 @@ export default async function handler(req, res) {
     order_type: order.delivery_type === 'DELIVERY' ? 'Delivery' : (order.table ? 'Mesa' : 'Balcão'),
     table_or_client: order.table ? `Mesa ${order.table}` : (order.customer?.name || order.client_name || 'Mesa Balcão'),
     customer_name: order.customer?.name || order.client_name || 'Cliente Goomer',
-    sector: order.items?.[0]?.category_name || 'Cozinha',
-    status: order.status === 'IN_PREPARATION' ? 'EM PREPARO' : 'NOVO',
+    sector: order.items?.[0]?.category_name || order.items?.[0]?.sector || 'Cozinha',
+    status: order.status === 'FINISHED' || order.status === 'DELIVERED' ? 'CONCLUIDO' : (order.status === 'IN_PREPARATION' ? 'EM PREPARO' : 'NOVO'),
     items: (order.items || order.products || []).map((item, idx) => ({
       id: item.id || String(idx + 1),
       name: item.name || item.title || 'Item Goomer',
       quantity: item.quantity || 1,
       obs: item.obs || item.observation || '',
-      sector: item.category_name || 'Cozinha'
+      sector: item.category_name || item.sector || 'Cozinha'
     })),
     total_price: order.total || order.total_price || 0,
     created_at: order.created_at || new Date().toISOString()
