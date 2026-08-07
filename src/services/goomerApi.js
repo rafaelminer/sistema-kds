@@ -1,10 +1,23 @@
-// Service for fetching orders directly from Goomer Integration API
+// Service for fetching orders directly from Goomer Integration API via Serverless Proxy
 export async function fetchGoomerOrders(apiToken) {
   const token = apiToken || "16817885-c866-495b-8d27-23e873bb56f8";
-  if (!token) return [];
 
+  // First try the Vercel Serverless proxy (bypasses browser CORS completely)
   try {
-    const res = await fetch('https://api.goomer.app/v1/orders?status=PENDING,IN_PREPARATION', {
+    const proxyRes = await fetch(`/api/fetch-goomer?token=${encodeURIComponent(token)}`);
+    if (proxyRes && proxyRes.ok) {
+      const data = await proxyRes.json();
+      if (data && data.orders) {
+        return data.orders;
+      }
+    }
+  } catch (err) {
+    // Fallback if running pure local client
+  }
+
+  // Direct client fallback
+  try {
+    const res = await fetch('https://partner-api.goomer.app/v1/orders', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
