@@ -70,6 +70,27 @@ export const INITIAL_MOCK_ORDERS = [
   }
 ];
 
+const getStorageItem = (key, fallback = '') => {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      return window.localStorage.getItem(key) || fallback;
+    }
+  } catch (e) {
+    console.warn('localStorage not available:', e);
+  }
+  return fallback;
+};
+
+const setStorageItem = (key, value) => {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      window.localStorage.setItem(key, value);
+    }
+  } catch (e) {
+    console.warn('localStorage write failed:', e);
+  }
+};
+
 class KdsStorageService {
   constructor() {
     this.supabase = null;
@@ -78,8 +99,8 @@ class KdsStorageService {
   }
 
   initSupabase() {
-    const url = localStorage.getItem('kds_supabase_url') || import.meta.env.VITE_SUPABASE_URL || '';
-    const key = localStorage.getItem('kds_supabase_key') || import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+    const url = getStorageItem('kds_supabase_url') || (typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env.VITE_SUPABASE_URL : '') || '';
+    const key = getStorageItem('kds_supabase_key') || (typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env.VITE_SUPABASE_ANON_KEY : '') || '';
 
     const safeUrl = typeof url === 'string' ? url.trim() : '';
     const safeKey = typeof key === 'string' ? key.trim() : '';
@@ -100,24 +121,24 @@ class KdsStorageService {
 
   getConfig() {
     return {
-      supabaseUrl: localStorage.getItem('kds_supabase_url') || '',
-      supabaseKey: localStorage.getItem('kds_supabase_key') || '',
-      goomerToken: localStorage.getItem('kds_goomer_token') || '16817885-c866-495b-8d27-23e873bb56f8',
-      ifoodToken: localStorage.getItem('kds_ifood_token') || '',
-      soundEnabled: localStorage.getItem('kds_sound') !== 'false',
-      warningMin: parseInt(localStorage.getItem('kds_warn_min') || '10', 10),
-      urgentMin: parseInt(localStorage.getItem('kds_urg_min') || '20', 10)
+      supabaseUrl: getStorageItem('kds_supabase_url', ''),
+      supabaseKey: getStorageItem('kds_supabase_key', ''),
+      goomerToken: getStorageItem('kds_goomer_token', '16817885-c866-495b-8d27-23e873bb56f8'),
+      ifoodToken: getStorageItem('kds_ifood_token', ''),
+      soundEnabled: getStorageItem('kds_sound', 'true') !== 'false',
+      warningMin: parseInt(getStorageItem('kds_warn_min', '10'), 10),
+      urgentMin: parseInt(getStorageItem('kds_urg_min', '20'), 10)
     };
   }
 
   saveConfig(config) {
-    if (config.supabaseUrl !== undefined) localStorage.setItem('kds_supabase_url', config.supabaseUrl);
-    if (config.supabaseKey !== undefined) localStorage.setItem('kds_supabase_key', config.supabaseKey);
-    if (config.goomerToken !== undefined) localStorage.setItem('kds_goomer_token', config.goomerToken);
-    if (config.ifoodToken !== undefined) localStorage.setItem('kds_ifood_token', config.ifoodToken);
-    if (config.soundEnabled !== undefined) localStorage.setItem('kds_sound', config.soundEnabled ? 'true' : 'false');
-    if (config.warningMin) localStorage.setItem('kds_warn_min', config.warningMin.toString());
-    if (config.urgentMin) localStorage.setItem('kds_urg_min', config.urgentMin.toString());
+    if (config.supabaseUrl !== undefined) setStorageItem('kds_supabase_url', config.supabaseUrl);
+    if (config.supabaseKey !== undefined) setStorageItem('kds_supabase_key', config.supabaseKey);
+    if (config.goomerToken !== undefined) setStorageItem('kds_goomer_token', config.goomerToken);
+    if (config.ifoodToken !== undefined) setStorageItem('kds_ifood_token', config.ifoodToken);
+    if (config.soundEnabled !== undefined) setStorageItem('kds_sound', config.soundEnabled ? 'true' : 'false');
+    if (config.warningMin) setStorageItem('kds_warn_min', config.warningMin.toString());
+    if (config.urgentMin) setStorageItem('kds_urg_min', config.urgentMin.toString());
     this.initSupabase();
   }
 
@@ -137,12 +158,16 @@ class KdsStorageService {
       }
     }
 
-    const stored = localStorage.getItem('kds_orders');
+    const stored = getStorageItem('kds_orders', null);
     if (!stored) {
-      localStorage.setItem('kds_orders', JSON.stringify(INITIAL_MOCK_ORDERS));
+      setStorageItem('kds_orders', JSON.stringify(INITIAL_MOCK_ORDERS));
       return INITIAL_MOCK_ORDERS;
     }
-    return JSON.parse(stored);
+    try {
+      return JSON.parse(stored);
+    } catch (err) {
+      return INITIAL_MOCK_ORDERS;
+    }
   }
 
   async addOrder(newOrder) {
@@ -177,7 +202,7 @@ class KdsStorageService {
 
     const orders = await this.getOrders();
     const updated = [preparedOrder, ...orders];
-    localStorage.setItem('kds_orders', JSON.stringify(updated));
+    setStorageItem('kds_orders', JSON.stringify(updated));
     return preparedOrder;
   }
 
@@ -198,7 +223,7 @@ class KdsStorageService {
 
     const orders = await this.getOrders();
     const updated = orders.map(o => o.id === orderId ? { ...o, status: newStatus } : o);
-    localStorage.setItem('kds_orders', JSON.stringify(updated));
+    setStorageItem('kds_orders', JSON.stringify(updated));
     return updated.find(o => o.id === orderId);
   }
 
@@ -210,7 +235,7 @@ class KdsStorageService {
         console.error('Erro ao limpar Supabase:', e);
       }
     }
-    localStorage.setItem('kds_orders', JSON.stringify(INITIAL_MOCK_ORDERS));
+    setStorageItem('kds_orders', JSON.stringify(INITIAL_MOCK_ORDERS));
     return INITIAL_MOCK_ORDERS;
   }
 
