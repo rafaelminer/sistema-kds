@@ -160,13 +160,13 @@ class KdsStorageService {
 
     const stored = getStorageItem('kds_orders', null);
     if (!stored) {
-      setStorageItem('kds_orders', JSON.stringify(INITIAL_MOCK_ORDERS));
-      return INITIAL_MOCK_ORDERS;
+      setStorageItem('kds_orders', JSON.stringify([]));
+      return [];
     }
     try {
       return JSON.parse(stored);
     } catch (err) {
-      return INITIAL_MOCK_ORDERS;
+      return [];
     }
   }
 
