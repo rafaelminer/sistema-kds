@@ -78,12 +78,15 @@ class KdsStorageService {
   }
 
   initSupabase() {
-    const url = localStorage.getItem('kds_supabase_url') || import.meta.env.VITE_SUPABASE_URL;
-    const key = localStorage.getItem('kds_supabase_key') || import.meta.env.VITE_SUPABASE_ANON_KEY;
+    const url = localStorage.getItem('kds_supabase_url') || import.meta.env.VITE_SUPABASE_URL || '';
+    const key = localStorage.getItem('kds_supabase_key') || import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
-    if (url && key && url.trim().startsWith('http')) {
+    const safeUrl = typeof url === 'string' ? url.trim() : '';
+    const safeKey = typeof key === 'string' ? key.trim() : '';
+
+    if (safeUrl && safeKey && safeUrl.startsWith('http')) {
       try {
-        this.supabase = createClient(url.trim(), key.trim());
+        this.supabase = createClient(safeUrl, safeKey);
         this.useSupabase = true;
         console.log('⚡ Supabase Multicanal Conectado com sucesso!');
       } catch (err) {

@@ -4,7 +4,6 @@ export async function fetchGoomerOrders(apiToken) {
   if (!token) return [];
 
   try {
-    // Goomer API endpoint for orders
     const res = await fetch('https://api.goomer.app/v1/orders?status=PENDING,IN_PREPARATION', {
       method: 'GET',
       headers: {
@@ -14,7 +13,7 @@ export async function fetchGoomerOrders(apiToken) {
       }
     });
 
-    if (res.ok) {
+    if (res && res.ok) {
       const data = await res.json();
       const rawOrders = Array.isArray(data) ? data : (data.orders || data.data || []);
       
@@ -39,8 +38,7 @@ export async function fetchGoomerOrders(apiToken) {
       }));
     }
   } catch (err) {
-    // Silently handle CORS / Offline API errors
-    console.debug('Goomer API fetch polling debug notice:', err);
+    // CORS or network error caught safely
   }
 
   return [];
