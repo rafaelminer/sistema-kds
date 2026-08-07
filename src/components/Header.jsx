@@ -29,7 +29,8 @@ export default function Header({
   onOpenSettings,
   isCloudConnected,
   ordersCount,
-  onResetDemo
+  onResetDemo,
+  onClearDemo
 }) {
   const [time, setTime] = useState(new Date());
   const [isFullscreen, setIsFullscreen] = useState(false);
