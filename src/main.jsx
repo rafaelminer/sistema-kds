@@ -22,8 +22,8 @@ class ErrorBoundary extends React.Component {
       return (
         <div style={{ padding: 30, color: '#fff', backgroundColor: '#0f172a', fontFamily: 'sans-serif', textAlign: 'center', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
           <h1 style={{ color: '#f59e0b', fontSize: '24px' }}>🍳 KDS Cozinha - Modulo em Recuperação</h1>
-          <p style={{ color: '#94a3b8', fontSize: '14px', maxWidth: '400px', margin: '15px 0' }}>
-            Ocorreu um ajuste temporário de inicialização. Clique abaixo para recarregar.
+          <p style={{ color: '#94a3b8', fontSize: '14px', maxWidth: '500px', margin: '15px 0' }}>
+            {this.state.error ? String(this.state.error.stack || this.state.error.message || this.state.error) : 'Erro desconhecido'}
           </p>
           <button 
             onClick={() => { localStorage.clear(); window.location.reload(); }}
