@@ -7,14 +7,19 @@ class SoundService {
   }
 
   init() {
-    if (!this.audioCtx) {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      if (AudioContext) {
-        this.audioCtx = new AudioContext();
+    if (typeof window === 'undefined') return;
+    try {
+      if (!this.audioCtx) {
+        const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtxClass) {
+          this.audioCtx = new AudioCtxClass();
+        }
       }
-    }
-    if (this.audioCtx && this.audioCtx.state === 'suspended') {
-      this.audioCtx.resume();
+      if (this.audioCtx && this.audioCtx.state === 'suspended') {
+        this.audioCtx.resume().catch(() => {});
+      }
+    } catch (err) {
+      console.warn('AudioContext init prevented:', err);
     }
   }
 

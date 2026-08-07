@@ -77,7 +77,9 @@ export default function OrderCard({ order, onUpdateStatus, warningMin = 10, urge
       onUpdateStatus(order.id, 'EM PREPARO');
     } else if (order.status === 'EM PREPARO') {
       onUpdateStatus(order.id, 'PRONTO');
-      confetti({ particleCount: 40, spread: 60, origin: { y: 0.7 } });
+      try {
+        confetti({ particleCount: 40, spread: 60, origin: { y: 0.7 } });
+      } catch (e) {}
     } else if (order.status === 'PRONTO') {
       onUpdateStatus(order.id, 'CONCLUIDO');
     }
