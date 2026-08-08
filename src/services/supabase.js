@@ -99,8 +99,8 @@ class KdsStorageService {
   }
 
   initSupabase() {
-    const url = getStorageItem('kds_supabase_url') || (typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env.VITE_SUPABASE_URL : '') || '';
-    const key = getStorageItem('kds_supabase_key') || (typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env.VITE_SUPABASE_ANON_KEY : '') || '';
+    const url = getStorageItem('kds_supabase_url') || (typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env.VITE_SUPABASE_URL : '') || 'https://vtlusakhkxpmwqsbhojj.supabase.co';
+    const key = getStorageItem('kds_supabase_key') || (typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env.VITE_SUPABASE_ANON_KEY : '') || 'sb_publishable_H2BsYsa7HyJmzW70rGeYkw_ACoArvxQ';
 
     const safeUrl = typeof url === 'string' ? url.trim() : '';
     const safeKey = typeof key === 'string' ? key.trim() : '';

@@ -190,9 +190,10 @@ export default function Header({
           <button
             onClick={onOpenSettings}
             title="Configurações & URLs de Webhooks"
-            className="p-2 rounded-lg bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 border border-slate-700 transition-all"
+            className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-amber-500/20 text-slate-200 hover:text-amber-400 border border-slate-700 hover:border-amber-500/40 text-xs font-bold transition-all flex items-center gap-1.5"
           >
-            <Settings className="w-4 h-4" />
+            <Settings className="w-4 h-4 text-amber-400" />
+            <span>Configurações</span>
           </button>
 
         </div>
