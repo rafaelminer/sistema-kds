@@ -99,19 +99,24 @@ class KdsStorageService {
   }
 
   initSupabase() {
-    const url = getStorageItem('kds_supabase_url') || (typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env.VITE_SUPABASE_URL : '') || 'https://vtlusakhkxpmwqsbhojj.supabase.co';
-    const key = getStorageItem('kds_supabase_key') || (typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env.VITE_SUPABASE_ANON_KEY : '') || 'sb_publishable_H2BsYsa7HyJmzW70rGeYkw_ACoArvxQ';
+    const storedUrl = getStorageItem('kds_supabase_url');
+    const storedKey = getStorageItem('kds_supabase_key');
 
-    const safeUrl = typeof url === 'string' ? url.trim() : '';
-    const safeKey = typeof key === 'string' ? key.trim() : '';
+    const url = (storedUrl && storedUrl.trim().length > 5) 
+      ? storedUrl.trim() 
+      : 'https://vtlusakhkxpmwqsbhojj.supabase.co';
 
-    if (safeUrl && safeKey && safeUrl.startsWith('http')) {
+    const key = (storedKey && storedKey.trim().length > 5) 
+      ? storedKey.trim() 
+      : 'sb_publishable_H2BsYsa7HyJmzW70rGeYkw_ACoArvxQ';
+
+    if (url && key) {
       try {
-        this.supabase = createClient(safeUrl, safeKey);
+        this.supabase = createClient(url, key);
         this.useSupabase = true;
-        console.log('⚡ Supabase Multicanal Conectado com sucesso!');
+        console.log('⚡ Supabase Multicanal Conectado com sucesso ao Sensei KDS!');
       } catch (err) {
-        console.warn('Erro ao inicializar Supabase, usando LocalStorage:', err);
+        console.warn('Erro ao inicializar Supabase:', err);
         this.useSupabase = false;
       }
     } else {
