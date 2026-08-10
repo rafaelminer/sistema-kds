@@ -6,15 +6,7 @@ import {
   Maximize2, 
   Minimize2, 
   Settings, 
-  Zap, 
-  Clock, 
-  Wifi, 
-  Filter, 
-  RotateCcw,
-  Sparkles,
-  Layers,
-  Trash2,
-  Activity
+  Clock
 } from 'lucide-react';
 
 export default function Header({ 
@@ -22,16 +14,10 @@ export default function Header({
   setSelectedSector, 
   selectedChannel,
   setSelectedChannel,
-  statusFilter, 
-  setStatusFilter,
   audioEnabled, 
   setAudioEnabled,
-  onOpenSimulator,
   onOpenSettings,
-  isCloudConnected,
-  ordersCount,
-  onResetDemo,
-  onClearDemo
+  isCloudConnected
 }) {
   const [time, setTime] = useState(new Date());
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -65,10 +51,6 @@ export default function Header({
     { id: 'IFOOD', label: '🔴 iFood' }
   ];
 
-  const handleRunDiagnostic = () => {
-    window.open('/api/debug-goomer', '_blank');
-  };
-
   return (
     <header className="sticky top-0 z-30 glass-header shadow-2xl px-4 py-3">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
@@ -82,7 +64,7 @@ export default function Header({
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="font-extrabold text-lg tracking-tight text-white flex items-center gap-1.5">
-                  KDS Cozinha <span className="text-amber-400 text-xs px-2 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/20 font-mono font-bold">MULTICANAL</span>
+                  KDS Cozinha <span className="text-amber-400 text-xs px-2 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/20 font-mono font-bold">MODO REAL</span>
                 </h1>
               </div>
               <div className="flex items-center gap-2 text-xs font-semibold mt-0.5">
@@ -172,32 +154,6 @@ export default function Header({
             className="p-2 rounded-lg bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 border border-slate-700 transition-all"
           >
             {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
-          </button>
-
-          <button
-            onClick={handleRunDiagnostic}
-            title="Diagnóstico de Conexão Goomer em Tempo Real"
-            className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 border border-cyan-500/30 text-xs font-bold flex items-center gap-1 transition-all"
-          >
-            <Activity className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
-            <span>Diag. Goomer</span>
-          </button>
-
-          <button
-            onClick={onOpenSimulator}
-            className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-cyan-600 via-blue-600 to-amber-600 hover:brightness-110 text-white font-black text-xs shadow-lg flex items-center gap-1.5 transition-all"
-          >
-            <Sparkles className="w-4 h-4 text-cyan-200" />
-            Simular Pedidos
-          </button>
-
-          <button
-            onClick={onClearDemo}
-            title="Zerar para Modo Real de Produção"
-            className="px-2.5 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-rose-400 hover:bg-slate-750 border border-slate-700 transition-all text-xs font-bold flex items-center gap-1"
-          >
-            <Trash2 className="w-3.5 h-3.5 text-rose-400" />
-            <span>Zerar p/ Modo Real</span>
           </button>
 
           <button

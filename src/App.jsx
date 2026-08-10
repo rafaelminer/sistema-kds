@@ -285,17 +285,11 @@ export default function App() {
               <Inbox className="w-8 h-8" />
             </div>
             <div>
-              <h3 className="font-extrabold text-lg text-white">Nenhum pedido nesta visualização</h3>
+              <h3 className="font-extrabold text-lg text-white">Nenhum pedido pendente</h3>
               <p className="text-xs text-slate-400 max-w-sm mt-1">
-                Aguardando entrada de pedidos do Goomer ou iFood...
+                Aguardando entrada de novos pedidos reais da Goomer ou iFood...
               </p>
             </div>
-            <button
-              onClick={() => setIsSimulatorOpen(true)}
-              className="px-4 py-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-xs font-bold flex items-center gap-2 transition-all"
-            >
-              <Sparkles className="w-4 h-4" /> Simular Pedido Goomer / iFood
-            </button>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-start">
