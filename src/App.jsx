@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Header from './components/Header';
 import OrderCard from './components/OrderCard';
+import AllDayPrepSummary from './components/AllDayPrepSummary';
 import GoomerSimulatorModal from './components/GoomerSimulatorModal';
 import SettingsModal from './components/SettingsModal';
 import { kdsStorage } from './services/supabase';
@@ -279,9 +280,10 @@ export default function App() {
               placeholder="Buscar mesa, iFood #, cliente..."
               className="w-full bg-slate-800/90 border border-slate-700/80 rounded-xl pl-9 pr-3 py-1.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-amber-500 transition-all"
             />
-          </div>
-
         </div>
+
+        {/* All-Day Prep Batch Summary */}
+        <AllDayPrepSummary orders={orders} />
 
         {/* Orders Grid */}
         {loading ? (
