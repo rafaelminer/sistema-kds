@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Flame, ChevronDown, ChevronUp, Layers, PackageCheck } from 'lucide-react';
+import { Flame, ChevronDown, ChevronUp } from 'lucide-react';
 
 export default function AllDayPrepSummary({ orders }) {
   const [isExpanded, setIsExpanded] = useState(true);

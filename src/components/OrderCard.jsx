@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Clock, CheckCircle2, Play, Check, AlertTriangle, User, Hash, UtensilsCrossed, ArrowRight, RotateCcw, ChevronRight } from 'lucide-react';
+import { Clock, CheckCircle2, Play, Check, AlertTriangle, User, RotateCcw } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export default function OrderCard({ order, onUpdateStatus, warningMin = 10, urgentMin = 20, isCompact = false }) {
