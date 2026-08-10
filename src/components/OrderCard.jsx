@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Clock, CheckCircle2, Play, Check, AlertTriangle, User, RotateCcw } from 'lucide-react';
-import confetti from 'canvas-confetti';
 
 export default function OrderCard({ order, onUpdateStatus, warningMin = 10, urgentMin = 20, isCompact = false }) {
   const [elapsedMinutes, setElapsedMinutes] = useState(0);
@@ -78,9 +77,10 @@ export default function OrderCard({ order, onUpdateStatus, warningMin = 10, urge
       onUpdateStatus(order.id, 'EM PREPARO');
     } else if (order.status === 'EM PREPARO') {
       onUpdateStatus(order.id, 'PRONTO');
-      try {
-        confetti({ particleCount: 40, spread: 60, origin: { y: 0.7 } });
-      } catch (e) {}
+      import('canvas-confetti').then((confettiModule) => {
+        const confettiFn = confettiModule.default || confettiModule;
+        confettiFn({ particleCount: 40, spread: 60, origin: { y: 0.7 } });
+      }).catch(() => {});
     } else if (order.status === 'PRONTO') {
       onUpdateStatus(order.id, 'CONCLUIDO');
     }
