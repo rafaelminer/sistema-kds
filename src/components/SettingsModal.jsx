@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Save, Database, Cloud, Globe, Bell, Copy, Check, ExternalLink, HelpCircle, ShieldCheck } from 'lucide-react';
+import { X, Save, Copy, Check, ExternalLink } from 'lucide-react';
 import { kdsStorage } from '../services/supabase';
 
 export default function SettingsModal({ isOpen, onClose, onSaveSuccess }) {

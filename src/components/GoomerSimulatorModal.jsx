@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Send, Sparkles, Plus, Trash2, ShoppingBag, Utensils, AlertCircle } from 'lucide-react';
+import { X, Send, Sparkles, Plus, Trash2, AlertCircle } from 'lucide-react';
 
 export default function GoomerSimulatorModal({ isOpen, onClose, onSendSimulatedOrder }) {
   if (!isOpen) return null;
