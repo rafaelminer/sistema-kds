@@ -13,7 +13,8 @@ import {
   RotateCcw,
   Sparkles,
   Layers,
-  Trash2
+  Trash2,
+  Activity
 } from 'lucide-react';
 
 export default function Header({ 
@@ -64,8 +65,12 @@ export default function Header({
     { id: 'IFOOD', label: '🔴 iFood' }
   ];
 
+  const handleRunDiagnostic = () => {
+    window.open('/api/debug-goomer', '_blank');
+  };
+
   return (
-    <header className="sticky top-0 z-30 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 shadow-2xl px-4 py-3">
+    <header className="sticky top-0 z-30 glass-header shadow-2xl px-4 py-3">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
         
         {/* Brand & Status */}
@@ -77,32 +82,39 @@ export default function Header({
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="font-extrabold text-lg tracking-tight text-white flex items-center gap-1.5">
-                  KDS Cozinha <span className="text-amber-400 text-xs px-2 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/20 font-mono">MULTICANAL</span>
+                  KDS Cozinha <span className="text-amber-400 text-xs px-2 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/20 font-mono font-bold">MULTICANAL</span>
                 </h1>
               </div>
-              <p className="text-xs text-slate-400 font-medium flex items-center gap-1.5">
-                <span className={`w-2 h-2 rounded-full ${isCloudConnected ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`}></span>
-                {isCloudConnected ? 'Sincronizado Supabase Cloud (Goomer + iFood)' : 'Modo Demonstrativo (Goomer + iFood)'}
-              </p>
+              <div className="flex items-center gap-2 text-xs font-semibold mt-0.5">
+                <span className="flex items-center gap-1 text-emerald-400">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  Sincronizado Supabase Cloud (Goomer + iFood)
+                </span>
+              </div>
             </div>
           </div>
 
-          <div className="md:hidden flex items-center gap-1 font-mono text-sm font-bold text-amber-400 bg-slate-850 px-2.5 py-1 rounded-lg border border-slate-800">
-            <Clock className="w-4 h-4 text-amber-400" />
-            {time.toLocaleTimeString('pt-BR')}
+          {/* Mobile Actions */}
+          <div className="flex items-center gap-1.5 md:hidden">
+            <button
+              onClick={onOpenSettings}
+              className="p-2 rounded-lg bg-slate-800 text-slate-300 hover:text-white border border-slate-700"
+            >
+              <Settings className="w-4 h-4" />
+            </button>
           </div>
         </div>
 
-        {/* Filters: Channel & Sector */}
-        <div className="flex flex-col sm:flex-row items-center gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 scrollbar-none">
+        {/* Filters Bar */}
+        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto justify-center">
           
           {/* Channel Filters */}
-          <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800">
+          <div className="flex items-center gap-1 bg-slate-950/80 p-1 rounded-xl border border-slate-800">
             {channels.map(ch => (
               <button
                 key={ch.id}
                 onClick={() => setSelectedChannel(ch.id)}
-                className={`px-2.5 py-1 rounded-lg text-xs font-black transition-all ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all ${
                   selectedChannel === ch.id
                     ? ch.id === 'IFOOD' 
                       ? 'bg-red-600 text-white shadow-md shadow-red-600/30' 
@@ -121,10 +133,10 @@ export default function Header({
               <button
                 key={sector.id}
                 onClick={() => setSelectedSector(sector.id)}
-                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
                   selectedSector === sector.id
-                    ? 'bg-slate-700 text-white font-extrabold border border-slate-600'
-                    : 'bg-slate-800/80 text-slate-400 hover:bg-slate-750 hover:text-white'
+                    ? 'bg-slate-700 text-white font-extrabold border border-slate-600 shadow-md'
+                    : 'bg-slate-800/80 text-slate-400 hover:bg-slate-750 hover:text-white border border-slate-800'
                 }`}
               >
                 {sector.label}
@@ -137,7 +149,7 @@ export default function Header({
         {/* Action Controls */}
         <div className="flex items-center gap-2 w-full md:w-auto justify-end">
           
-          <div className="hidden md:flex items-center gap-1.5 font-mono text-sm font-bold text-amber-400 bg-slate-800/90 px-3 py-1.5 rounded-lg border border-slate-700/60 shadow-inner">
+          <div className="hidden md:flex items-center gap-1.5 font-mono text-sm font-bold text-amber-400 bg-slate-950/80 px-3 py-1.5 rounded-lg border border-slate-800 shadow-inner">
             <Clock className="w-4 h-4 text-amber-400" />
             {time.toLocaleTimeString('pt-BR')}
           </div>
@@ -163,40 +175,41 @@ export default function Header({
           </button>
 
           <button
+            onClick={handleRunDiagnostic}
+            title="Diagnóstico de Conexão Goomer em Tempo Real"
+            className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 border border-cyan-500/30 text-xs font-bold flex items-center gap-1 transition-all"
+          >
+            <Activity className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+            <span>Diag. Goomer</span>
+          </button>
+
+          <button
             onClick={onOpenSimulator}
-            className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-cyan-600 via-blue-600 to-red-600 hover:brightness-110 text-white font-black text-xs shadow-lg flex items-center gap-1.5 transition-all"
+            className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-cyan-600 via-blue-600 to-amber-600 hover:brightness-110 text-white font-black text-xs shadow-lg flex items-center gap-1.5 transition-all"
           >
             <Sparkles className="w-4 h-4 text-cyan-200" />
             Simular Pedidos
           </button>
 
           <button
-            onClick={onResetDemo}
-            title="Restaurar Pedidos Demonstrativos"
-            className="p-2 rounded-lg bg-slate-800 text-slate-400 hover:text-amber-400 hover:bg-slate-700 border border-slate-700 transition-all"
-          >
-            <RotateCcw className="w-4 h-4" />
-          </button>
-
-          <button
             onClick={onClearDemo}
-            title="Limpar Pedidos Fictícios (Pronto para Pedidos Reais)"
-            className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-red-950/40 text-slate-400 hover:text-red-400 border border-slate-700 hover:border-red-800/60 text-xs font-bold transition-all flex items-center gap-1"
+            title="Zerar para Modo Real de Produção"
+            className="px-2.5 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-rose-400 hover:bg-slate-750 border border-slate-700 transition-all text-xs font-bold flex items-center gap-1"
           >
-            <Trash2 className="w-3.5 h-3.5" />
-            <span className="hidden lg:inline">Zerar p/ Modo Real</span>
+            <Trash2 className="w-3.5 h-3.5 text-rose-400" />
+            <span>Zerar p/ Modo Real</span>
           </button>
 
           <button
             onClick={onOpenSettings}
-            title="Configurações & URLs de Webhooks"
-            className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-amber-500/20 text-slate-200 hover:text-amber-400 border border-slate-700 hover:border-amber-500/40 text-xs font-bold transition-all flex items-center gap-1.5"
+            title="Configurações de APIs & Tokens"
+            className="p-2 rounded-lg bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 border border-slate-700 transition-all hidden md:flex"
           >
-            <Settings className="w-4 h-4 text-amber-400" />
-            <span>Configurações</span>
+            <Settings className="w-4 h-4" />
           </button>
 
         </div>
+
       </div>
     </header>
   );

@@ -2,15 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap');
+
 :root {
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 }
 
 body {
   font-family: var(--font-sans);
-  background-color: #090d16;
-  color: #f1f5f9;
+  background-color: #060911;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(245, 158, 11, 0.05) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(239, 68, 68, 0.05) 0px, transparent 50%),
+    radial-gradient(at 50% 0%, rgba(14, 165, 233, 0.04) 0px, transparent 50%);
+  background-attachment: fixed;
+  color: #f8fafc;
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;
@@ -18,25 +25,26 @@ body {
 
 /* Custom Scrollbar for Kitchen Displays */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
 }
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #090d16;
 }
 ::-webkit-scrollbar-thumb {
-  background: #334155;
-  border-radius: 4px;
+  background: #1e293b;
+  border-radius: 99px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #334155;
 }
 
-/* Pulse animation for new incoming order cards */
+/* Animations for new incoming order cards */
 @keyframes cardIn {
   0% {
     opacity: 0;
-    transform: scale(0.92) translateY(20px);
+    transform: scale(0.94) translateY(24px);
   }
   100% {
     opacity: 1;
@@ -48,40 +56,55 @@ body {
   animation: cardIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes pulseGlowCyan {
+@keyframes pulseGlowAmber {
   0%, 100% {
-    box-shadow: 0 0 15px rgba(6, 182, 212, 0.3), inset 0 0 15px rgba(6, 182, 212, 0.1);
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.25), inset 0 0 15px rgba(245, 158, 11, 0.1);
+    border-color: rgba(245, 158, 11, 0.5);
   }
   50% {
-    box-shadow: 0 0 30px rgba(6, 182, 212, 0.65), inset 0 0 25px rgba(6, 182, 212, 0.25);
+    box-shadow: 0 0 35px rgba(245, 158, 11, 0.65), inset 0 0 25px rgba(245, 158, 11, 0.25);
+    border-color: rgba(245, 158, 11, 0.9);
   }
 }
 
 .glow-new-order {
-  animation: pulseGlowCyan 2s infinite ease-in-out;
+  animation: pulseGlowAmber 2s infinite ease-in-out;
 }
 
 @keyframes pulseRedAlert {
   0%, 100% {
     border-color: #ef4444;
-    box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
+    box-shadow: 0 0 16px rgba(239, 68, 68, 0.45);
   }
   50% {
     border-color: #f87171;
-    box-shadow: 0 0 28px rgba(239, 68, 68, 0.85);
+    box-shadow: 0 0 32px rgba(239, 68, 68, 0.95);
   }
 }
 
 .timer-overdue {
-  animation: pulseRedAlert 1.5s infinite ease-in-out;
+  animation: pulseRedAlert 1.2s infinite ease-in-out;
 }
 
-/* Glassmorphism helpers */
-.glass-panel {
-  background: rgba(15, 23, 42, 0.75);
+/* Premium Glassmorphism */
+.glass-header {
+  background: rgba(10, 15, 29, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-card {
+  background: rgba(15, 23, 42, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  transform: translateY(-2px);
 }
 
 .font-mono-numbers {
