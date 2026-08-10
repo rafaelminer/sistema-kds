@@ -37,30 +37,21 @@ export default function App() {
 
   const loadOrders = useCallback(async () => {
     try {
+      // 1. Puxa novos pedidos da Goomer via proxy e grava no Supabase Cloud
+      if (config.goomerToken) {
+        await fetchGoomerOrders(config.goomerToken);
+      }
+
+      // 2. Carrega todos os pedidos gravados no Supabase (Goomer + iFood)
       const data = await kdsStorage.getOrders();
       setOrders(data);
       setIsCloudConnected(kdsStorage.useSupabase);
-
-      // Try fetching live orders from Goomer API with user token
-      if (config.goomerToken) {
-        const liveGoomerOrders = await fetchGoomerOrders(config.goomerToken);
-        if (liveGoomerOrders && liveGoomerOrders.length > 0) {
-          setOrders(prev => {
-            const existingIds = new Set(prev.map(o => o.id));
-            const newFetched = liveGoomerOrders.filter(o => !existingIds.has(o.id));
-            if (newFetched.length > 0 && audioEnabled) {
-              soundManager.playNewOrderSound();
-            }
-            return [...newFetched, ...prev];
-          });
-        }
-      }
     } catch (err) {
       console.error('Erro ao carregar pedidos:', err);
     } finally {
       setLoading(false);
     }
-  }, [config.goomerToken, audioEnabled]);
+  }, [config.goomerToken]);
 
   useEffect(() => {
     loadOrders();
