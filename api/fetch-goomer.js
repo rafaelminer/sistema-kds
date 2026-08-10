@@ -2,7 +2,6 @@
 import { createClient } from '@supabase/supabase-js';
 
 export default async function handler(req, res) {
-  // Set CORS headers so frontend can read
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
@@ -25,12 +24,14 @@ export default async function handler(req, res) {
   }
 
   const urlsToTry = [
-    `https://partner-api.goomer.app/v1/orders?token=${token}`,
-    `https://api.goomer.app/v1/orders?token=${token}`,
-    `https://api.goomer.app/v1/orders?api_token=${token}`,
-    'https://partner-api.goomer.app/v1/orders',
-    'https://api.goomer.app/v1/orders',
-    'https://api.goomer.com.br/v1/orders'
+    `https://partner-api.goomer.app/v1/events/polling`,
+    `https://partner-api.goomer.app/v1/orders`,
+    `https://partner-api.goomer.app/opendelivery/v1/events/polling`,
+    `https://partner-api.goomer.app/opendelivery/v1/orders`,
+    `https://api.goomer.app/v1/events/polling`,
+    `https://api.goomer.app/v1/orders`,
+    `https://api.goomer.com.br/v1/events/polling`,
+    `https://api.goomer.com.br/v1/orders`
   ];
 
   const headerCombos = [
@@ -50,9 +51,10 @@ export default async function handler(req, res) {
         debugLog.push({ url, status: response.status });
         if (response.ok) {
           const data = await response.json();
-          const rawList = Array.isArray(data) ? data : (data.orders || data.data || data.results || []);
+          const rawList = Array.isArray(data) ? data : (data.orders || data.data || data.results || data.events || []);
           if (rawList && rawList.length > 0) {
-            fetchedOrders = rawList;
+            // Extract order payloads from events or direct orders
+            fetchedOrders = rawList.map(item => item.order || item.payload || item);
             break;
           }
         }
