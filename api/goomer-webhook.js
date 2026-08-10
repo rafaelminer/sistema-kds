@@ -4,15 +4,13 @@ import { createClient } from '@supabase/supabase-js';
 const GOOMER_SECRET_TOKEN = process.env.VITE_GOOMER_TOKEN || "9e3dac23-eabb-4861-8b43-c5fdde9caea5";
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Método não permitido. Use POST.' });
+  // Allow GET ping validation from Goomer
+  if (req.method === 'GET') {
+    return res.status(200).json({ status: 'OK', message: 'Goomer Webhook Listener Ativo' });
   }
 
-  // Token authentication check (if sent by Goomer headers or query param)
-  const incomingToken = req.headers['x-goomer-token'] || req.headers['authorization'] || req.query.token;
-  if (incomingToken && incomingToken !== GOOMER_SECRET_TOKEN && !incomingToken.includes(GOOMER_SECRET_TOKEN)) {
-    console.warn('⚠️ Token Goomer não bateu:', incomingToken);
-    // Proceeding to parse payload while logging
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Método não permitido. Use POST ou GET.' });
   }
 
   try {
@@ -39,10 +37,10 @@ export default async function handler(req, res) {
       sector: item.category_name || item.sector || 'Cozinha'
     }));
 
-    if (normalizedItems.length === 0 && orderData.name) {
+    if (normalizedItems.length === 0 && (orderData.name || orderData.title)) {
       normalizedItems.push({
         id: '1',
-        name: orderData.name,
+        name: orderData.name || orderData.title,
         quantity: orderData.quantity || 1,
         obs: orderData.obs || '',
         sector: 'Cozinha'
@@ -62,7 +60,7 @@ export default async function handler(req, res) {
       customer_name: orderData.customer?.name || orderData.client_name || 'Cliente Goomer',
       sector: normalizedItems[0]?.sector || 'Cozinha',
       status: 'NOVO',
-      items: normalizedItems,
+      items: normalizedItems.length > 0 ? normalizedItems : [{ id: '1', name: 'Pedido Goomer', quantity: 1, sector: 'Cozinha' }],
       total_price: orderData.total || orderData.total_price || 0,
       created_at: new Date().toISOString()
     };
@@ -70,7 +68,7 @@ export default async function handler(req, res) {
     if (supabase) {
       const { data, error } = await supabase
         .from('pedidos')
-        .insert([newKdsOrder])
+        .upsert([newKdsOrder], { onConflict: 'id' })
         .select()
         .single();
 

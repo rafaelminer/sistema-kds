@@ -24,40 +24,43 @@ export default async function handler(req, res) {
     supabase = createClient(supabaseUrl, supabaseKey);
   }
 
-  const endpointsToTry = [
-    'https://partner-api.goomer.app/v1/orders?status=PENDING,IN_PREPARATION,CONFIRMED,DELIVERED,FINISHED,CLOSED&limit=100',
-    'https://partner-api.goomer.app/v1/orders?limit=100',
+  const urlsToTry = [
+    `https://partner-api.goomer.app/v1/orders?token=${token}`,
+    `https://api.goomer.app/v1/orders?token=${token}`,
+    `https://api.goomer.app/v1/orders?api_token=${token}`,
     'https://partner-api.goomer.app/v1/orders',
-    'https://api.goomer.app/v1/orders?status=PENDING,IN_PREPARATION,CONFIRMED,DELIVERED,FINISHED,CLOSED&limit=100',
-    'https://api.goomer.app/v1/orders?limit=100',
     'https://api.goomer.app/v1/orders',
-    'https://partner-api.goomer.app/opendelivery/v1/orders'
+    'https://api.goomer.com.br/v1/orders'
+  ];
+
+  const headerCombos = [
+    { 'Content-Type': 'application/json', 'x-api-token': token, 'Authorization': `Bearer ${token}` },
+    { 'Content-Type': 'application/json', 'x-goomer-token': token },
+    { 'Content-Type': 'application/json', 'x-api-key': token },
+    { 'Content-Type': 'application/json', 'Authorization': token }
   ];
 
   let fetchedOrders = [];
+  let debugLog = [];
 
-  for (const url of endpointsToTry) {
-    try {
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-token': token,
-          'Authorization': `Bearer ${token}`
+  for (const url of urlsToTry) {
+    for (const headers of headerCombos) {
+      try {
+        const response = await fetch(url, { method: 'GET', headers });
+        debugLog.push({ url, status: response.status });
+        if (response.ok) {
+          const data = await response.json();
+          const rawList = Array.isArray(data) ? data : (data.orders || data.data || data.results || []);
+          if (rawList && rawList.length > 0) {
+            fetchedOrders = rawList;
+            break;
+          }
         }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        const rawList = Array.isArray(data) ? data : (data.orders || data.data || data.results || []);
-        if (rawList && rawList.length > 0) {
-          fetchedOrders = rawList;
-          break;
-        }
+      } catch (e) {
+        // continue
       }
-    } catch (e) {
-      // Continue trying next endpoint
     }
+    if (fetchedOrders.length > 0) break;
   }
 
   const normalized = fetchedOrders.map(order => ({
@@ -89,5 +92,5 @@ export default async function handler(req, res) {
     }
   }
 
-  return res.status(200).json({ success: true, count: normalized.length, orders: normalized });
+  return res.status(200).json({ success: true, count: normalized.length, orders: normalized, debug: debugLog });
 }
