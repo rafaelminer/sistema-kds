@@ -1,7 +1,7 @@
 // Serverless Endpoint (Vercel API Route) for Goomer Webhook integration
 import { createClient } from '@supabase/supabase-js';
 
-const GOOMER_SECRET_TOKEN = process.env.VITE_GOOMER_TOKEN || "16817885-c866-495b-8d27-23e873bb56f8";
+const GOOMER_SECRET_TOKEN = process.env.VITE_GOOMER_TOKEN || "9e3dac23-eabb-4861-8b43-c5fdde9caea5";
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {

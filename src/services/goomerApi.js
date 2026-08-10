@@ -1,6 +1,6 @@
 // Service for fetching orders directly from Goomer Integration API via Serverless Proxy
 export async function fetchGoomerOrders(apiToken) {
-  const token = apiToken || "16817885-c866-495b-8d27-23e873bb56f8";
+  const token = apiToken || "9e3dac23-eabb-4861-8b43-c5fdde9caea5";
 
   // First try the Vercel Serverless proxy (bypasses browser CORS completely)
   try {

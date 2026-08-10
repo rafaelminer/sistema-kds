@@ -13,7 +13,7 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  const token = req.query.token || process.env.VITE_GOOMER_TOKEN || "16817885-c866-495b-8d27-23e873bb56f8";
+  const token = req.query.token || process.env.VITE_GOOMER_TOKEN || "9e3dac23-eabb-4861-8b43-c5fdde9caea5";
 
   const endpointsToTry = [
     'https://partner-api.goomer.app/v1/orders?limit=50',

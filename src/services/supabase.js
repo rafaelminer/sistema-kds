@@ -128,7 +128,7 @@ class KdsStorageService {
     return {
       supabaseUrl: getStorageItem('kds_supabase_url', ''),
       supabaseKey: getStorageItem('kds_supabase_key', ''),
-      goomerToken: getStorageItem('kds_goomer_token', '16817885-c866-495b-8d27-23e873bb56f8'),
+      goomerToken: getStorageItem('kds_goomer_token', '9e3dac23-eabb-4861-8b43-c5fdde9caea5'),
       ifoodToken: getStorageItem('kds_ifood_token', ''),
       soundEnabled: getStorageItem('kds_sound', 'true') !== 'false',
       warningMin: parseInt(getStorageItem('kds_warn_min', '10'), 10),
