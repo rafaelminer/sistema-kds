@@ -1,4 +1,6 @@
-// Vercel Serverless Function to Proxy Goomer API calls without browser CORS issues
+// Vercel Serverless Function to Proxy Goomer API calls & sync with Supabase Cloud
+import { createClient } from '@supabase/supabase-js';
+
 export default async function handler(req, res) {
   // Set CORS headers so frontend can read
   res.setHeader('Access-Control-Allow-Credentials', true);
@@ -14,13 +16,22 @@ export default async function handler(req, res) {
   }
 
   const token = req.query.token || process.env.VITE_GOOMER_TOKEN || "9e3dac23-eabb-4861-8b43-c5fdde9caea5";
+  const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || "https://vtlusakhkxpmwqsbhojj.supabase.co";
+  const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || "sb_publishable_H2BsYsa7HyJmzW70rGeYkw_ACoArvxQ";
+
+  let supabase = null;
+  if (supabaseUrl && supabaseKey) {
+    supabase = createClient(supabaseUrl, supabaseKey);
+  }
 
   const endpointsToTry = [
-    'https://partner-api.goomer.app/v1/orders?limit=50',
+    'https://partner-api.goomer.app/v1/orders?status=PENDING,IN_PREPARATION,CONFIRMED,DELIVERED,FINISHED,CLOSED&limit=100',
+    'https://partner-api.goomer.app/v1/orders?limit=100',
     'https://partner-api.goomer.app/v1/orders',
-    'https://api.goomer.app/v1/orders?limit=50',
+    'https://api.goomer.app/v1/orders?status=PENDING,IN_PREPARATION,CONFIRMED,DELIVERED,FINISHED,CLOSED&limit=100',
+    'https://api.goomer.app/v1/orders?limit=100',
     'https://api.goomer.app/v1/orders',
-    'https://api.goomer.com.br/v1/orders'
+    'https://partner-api.goomer.app/opendelivery/v1/orders'
   ];
 
   let fetchedOrders = [];
@@ -68,6 +79,15 @@ export default async function handler(req, res) {
     total_price: order.total || order.total_price || 0,
     created_at: order.created_at || new Date().toISOString()
   }));
+
+  // Auto-sync into Supabase database if orders found
+  if (supabase && normalized.length > 0) {
+    try {
+      await supabase.from('pedidos').upsert(normalized, { onConflict: 'id' });
+    } catch (err) {
+      console.error('Erro ao sincronizar pedidos buscados com Supabase:', err);
+    }
+  }
 
   return res.status(200).json({ success: true, count: normalized.length, orders: normalized });
 }
