@@ -39,10 +39,8 @@ export default function Header({
 
   const sectors = [
     { id: 'ALL', label: 'Todos os Setores' },
-    { id: 'Cozinha', label: '🍳 Cozinha Hot' },
-    { id: 'Sushibar', label: '🍣 Sushibar' },
-    { id: 'Bar', label: '🍹 Bar & Drinks' },
-    { id: 'Sobremesas', label: '🍰 Sobremesas' }
+    { id: 'Cozinha', label: '🍳 Cozinha' },
+    { id: 'Copa', label: '🥤 Copa' }
   ];
 
   const channels = [

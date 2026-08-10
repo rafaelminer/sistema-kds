@@ -133,9 +133,19 @@ export default function App() {
       if (orderChannel !== selectedChannel) return false;
     }
 
-    // Sector filter
+    // Sector filter (Cozinha vs Copa)
     if (selectedSector !== 'ALL') {
-      const hasSectorItem = order.items && order.items.some(i => i.sector === selectedSector || order.sector === selectedSector);
+      const hasSectorItem = order.items && order.items.some(i => {
+        const itemSec = (i.sector || order.sector || '').toLowerCase();
+        const filterSec = selectedSector.toLowerCase();
+        if (filterSec === 'cozinha') {
+          return itemSec.includes('cozinha') || itemSec.includes('hot') || itemSec.includes('sushi') || itemSec === '';
+        }
+        if (filterSec === 'copa') {
+          return itemSec.includes('copa') || itemSec.includes('bar') || itemSec.includes('bebida') || itemSec.includes('suco') || itemSec.includes('agua');
+        }
+        return itemSec.includes(filterSec);
+      });
       if (!hasSectorItem) return false;
     }
 
