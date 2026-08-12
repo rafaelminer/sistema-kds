@@ -6,7 +6,7 @@ import GoomerSimulatorModal from './components/GoomerSimulatorModal';
 import SettingsModal from './components/SettingsModal';
 import { kdsStorage } from './services/supabase';
 import { soundManager } from './services/sound';
-import { Search, Inbox } from 'lucide-react';
+import { Search, Inbox, Volume2 } from 'lucide-react';
 
 import { fetchGoomerOrders } from './services/goomerApi';
 
