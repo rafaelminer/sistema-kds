@@ -77,10 +77,6 @@ export default function OrderCard({ order, onUpdateStatus, warningMin = 10, urge
       onUpdateStatus(order.id, 'EM PREPARO');
     } else if (order.status === 'EM PREPARO') {
       onUpdateStatus(order.id, 'PRONTO');
-      import('canvas-confetti').then((confettiModule) => {
-        const confettiFn = confettiModule.default || confettiModule;
-        confettiFn({ particleCount: 40, spread: 60, origin: { y: 0.7 } });
-      }).catch(() => {});
     } else if (order.status === 'PRONTO') {
       onUpdateStatus(order.id, 'CONCLUIDO');
     }

@@ -269,6 +269,8 @@ export default function App() {
               placeholder="Buscar mesa, iFood #, cliente..."
               className="w-full bg-slate-800/90 border border-slate-700/80 rounded-xl pl-9 pr-3 py-1.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-amber-500 transition-all"
             />
+          </div>
+
         </div>
 
         {/* All-Day Prep Batch Summary */}
